@@ -22,7 +22,7 @@ jobs:
         
     - name: 💥 CRITICAL FIX: Force API 28 💥
       run: |
-        # This fixes the persistent API 21 error (android.minapi = 21) in your buildozer.spec
+        # This reliably fixes the persistent API 21 error (android.minapi = 21) in your buildozer.spec
         sed -i 's/android.minapi = 21/android.minapi = 28/g' buildozer.spec
         sed -i 's/android.ndk_api = 21/android.ndk_api = 28/g' buildozer.spec
         
