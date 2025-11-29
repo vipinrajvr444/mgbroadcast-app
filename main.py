@@ -24,6 +24,7 @@ jobs:
     - name: 💥 CRITICAL FIX: Force API 28 💥
       run: |
         # Fixes the AC_PROG_LD error and the ANDROID_API __21 warning.
+        # This overwrites the values in your buildozer.spec (currently minapi=21)
         sed -i 's/android.minapi = 21/android.minapi = 28/g' buildozer.spec
         sed -i 's/android.ndk_api = 21/android.ndk_api = 28/g' buildozer.spec
         
