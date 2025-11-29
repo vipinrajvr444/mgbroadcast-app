@@ -1,0 +1,47 @@
+[app]
+title = MGBroadcast Scheduler
+package.name = mgbroadcast
+package.domain = org.test
+source.dir = .
+source.exclude_dirs = .buildozer, bin
+version = 0.1
+
+# CRITICAL: Requirements - JNIUS is required for service.py to access the file path
+# plyer is needed for notifications
+# jnius is needed for the Android service to access system APIs
+requirements = python3,kivy,plyer,schedule,jnius,six
+
+orientation = portrait
+
+# CRITICAL: If you want a custom icon, save it as icon.png in the same directory.
+# If you don't, leave the line commented out.
+# icon.filename = %(source.dir)s/icon.png
+
+source.include_exts = py,png,jpg,kv,json
+
+# (list) Android str of the display density
+# android.display_thendensity = ldpi,mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi
+
+[build]
+# Set a slightly lower, more stable Android API target for Colab builds.
+# Changing from 33 to 30 often fixes the build failure.
+android.api = 30
+# 💥 CRITICAL FIX: Changing minapi from 21 to 28
+android.minapi = 28
+android.ndk = 25b
+# 💥 CRITICAL FIX: Changing ndk_api from 21 to 28
+android.ndk_api = 28
+
+# CRITICAL: Permissions (Your service requires these)
+android.permissions = INTERNET, VIBRATE, RECEIVE_BOOT_COMPLETED, WAKE_LOCK
+
+# CRITICAL: Services (Background Task)
+# The format is 'service_name:entry_point_file.py'
+services = mgbroadcast_service:service.py
+
+# CRITICAL FIX for Colab: Use the stable develop branch of python-for-android
+# This often contains fixes not yet released to master
+p4a.branch = develop
+
+# (bool) Use the private storage by default
+android.private_storage = True
