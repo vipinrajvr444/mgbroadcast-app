@@ -1,20 +1,14 @@
-name: Android Build
+name: Android Build (Final Attempt)
 
 on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Using a slightly older, more stable Ubuntu version
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
 
-      # 💥 CRITICAL FIX: Use dedicated Action to set up NDK/SDK environment paths 💥
-      - name: Setup Android SDK and NDK (Fixes PATH errors)
-        uses: r0adkll/setup-android-sdk@v1.0.3
-        with:
-          ndk: 25.1.8937393 # NDK version matching your buildozer.spec (25b)
-          sdk-version: 34 # Latest stable SDK
-          
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -22,19 +16,28 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Only install basic system dependencies and buildozer, since SDK/NDK is handled above
+          # Minimal, robust dependency list
           sudo apt-get update
-          sudo apt-get install -y build-essential git zip unzip python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libtinfo-dev cmake libffi-dev libssl-dev
+          sudo apt-get install -y build-essential git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses-dev libtinfo-dev cmake
           pip install buildozer
 
       - name: Fix API Level
         run: |
-          # Force API 28 to fix the persistent build loop
+          # Force API 28 to fix the build loop
           sed -i 's/android.minapi = 21/android.minapi = 28/g' buildozer.spec
           sed -i 's/android.ndk_api = 21/android.ndk_api = 28/g' buildozer.spec
-
-      - name: Build and Accept Licenses
+          
+      # 💥 CRITICAL FIX: Manually set Android paths and download tools 💥
+      - name: Set Android Environment and Download Tools
         run: |
+          # Set Android Home to a predictable location and update buildozer
+          export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          yes | buildozer android update
+
+      - name: Run Buildozer
+        run: |
+          # The final build command
           yes | buildozer android debug
 
       - name: Upload APK
