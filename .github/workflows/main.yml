@@ -15,14 +15,15 @@ jobs:
         
     - name: Install dependencies
       run: |
-        # Corrected for perfect YAML syntax. This block is where line 23 failed.
+        # This section is the source of the line 23 error when incorrectly indented.
+        # It is now perfectly spaced.
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
         pip install buildozer
         
     - name: 💥 CRITICAL FIX: Force API 28 💥
       run: |
-        # This reliably fixes the persistent API 21 error (android.minapi = 21)
+        # [cite_start]This overrides the android.minapi = 21 in your buildozer.spec [cite: 34] to fix the build loop.
         sed -i 's/android.minapi = 21/android.minapi = 28/g' buildozer.spec
         sed -i 's/android.ndk_api = 21/android.ndk_api = 28/g' buildozer.spec
         
