@@ -15,14 +15,14 @@ jobs:
         
     - name: Install dependencies
       run: |
-        # Corrected for YAML syntax. Installs Buildozer dependencies.
+        # Corrected for perfect YAML syntax.
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
         pip install buildozer
         
     - name: 💥 CRITICAL FIX: Force API 28 💥
       run: |
-        # This reliably fixes the persistent API 21 error (android.minapi = 21)
+        # This fixes the persistent API 21 error (android.minapi = 21) in your buildozer.spec
         sed -i 's/android.minapi = 21/android.minapi = 28/g' buildozer.spec
         sed -i 's/android.ndk_api = 21/android.ndk_api = 28/g' buildozer.spec
         
